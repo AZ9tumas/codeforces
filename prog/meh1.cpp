@@ -3,9 +3,6 @@
 using namespace std;
 using ll = long long;
 
-template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
-template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
-
 // helper structures
 struct trie {
 
@@ -57,6 +54,35 @@ struct trie {
     }
 };
 
+string trie::commonPrefix() {
+    string f;
+    trie* currNode = this;
+
+    while (true){
+        int count = 0;
+        int next_index = -1;
+
+        for (int i = 0; i < 26; i++){
+
+            if (currNode->alph[i] != nullptr){
+                count++;
+                next_index = i;
+            }
+
+        }
+
+
+        if (count == 1 && !currNode->isend){
+            f += (char)('a' + next_index);
+            currNode = currNode->alph[next_index];
+        } else {
+            break;
+        }
+    }
+
+    return f;
+}
+
 bool isPrime(ll a){
     for (ll i = 2; i <= sqrt(a); i++){
         if (a % i == 0) return false;
@@ -87,8 +113,12 @@ unordered_set<ll> get_fac(ll num){
 
 // main soln
 void solve(){
-    int e; cin >> e;
-    cout << get_fac(e) << endl;
+    int t; cin >> t;
+    string t1 = to_string(t);
+    int n = (int)t1.size();
+    n -= 1;
+    int stuff = 9 * n + t / pow(10, n);
+    cout << stuff << endl;
 }
 
 int main(){
@@ -97,3 +127,4 @@ int main(){
     while (t--) solve();
     return 0;
 }
+

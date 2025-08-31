@@ -3,9 +3,6 @@
 using namespace std;
 using ll = long long;
 
-template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
-template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
-
 // helper structures
 struct trie {
 
@@ -14,12 +11,12 @@ struct trie {
 
     trie() {
         this->isend = false;
-        for (int i = 0; i < 26; i++) {
+        for (ll i = 0; i < 26; i++) {
             this->alph[i] = nullptr;
         }
     }
     ~trie() {
-        for (int i = 0; i < 26; i++) delete alph[i];
+        for (ll i = 0; i < 26; i++) delete alph[i];
     }
 
     string commonPrefix();
@@ -28,15 +25,18 @@ struct trie {
         trie* curr = this;
 
         for (char c : s){
-            int index = c - 'a';
+            ll index = c - 'a';
 
             if (curr->alph[index] == nullptr){
                 curr->alph[index] = new trie();
             }
+
+
             curr = curr->alph[index];
         }
 
         curr->isend = true;
+
     }
 
     bool search(const string s){
@@ -44,7 +44,7 @@ struct trie {
 
 
         for (char c : s){
-            int index = c - 'a';
+            ll index = c - 'a';
             if (curr->alph[index] == nullptr){
                 return false;
             }
@@ -56,6 +56,35 @@ struct trie {
         return curr != nullptr && curr->isend;
     }
 };
+
+string trie::commonPrefix() {
+    string f;
+    trie* currNode = this;
+
+    while (true){
+        ll count = 0;
+        ll next_index = -1;
+
+        for (ll i = 0; i < 26; i++){
+
+            if (currNode->alph[i] != nullptr){
+                count++;
+                next_index = i;
+            }
+
+        }
+
+
+        if (count == 1 && !currNode->isend){
+            f += (char)('a' + next_index);
+            currNode = currNode->alph[next_index];
+        } else {
+            break;
+        }
+    }
+
+    return f;
+}
 
 bool isPrime(ll a){
     for (ll i = 2; i <= sqrt(a); i++){
@@ -87,13 +116,32 @@ unordered_set<ll> get_fac(ll num){
 
 // main soln
 void solve(){
-    int e; cin >> e;
-    cout << get_fac(e) << endl;
+    ll a1, k; cin >> a1 >> k;
+
+    for (ll i = 1; i < k; i++){
+        string a1s = to_string(a1);
+        ll minc = (ll)'9', maxc = 0;
+        for (char c : a1s){
+            ll indx = c - '0';
+            minc = min(minc, indx);
+            maxc = max(maxc, indx);
+        }
+
+        if (minc == 0){
+            // done
+            cout << a1 << endl;
+            return;
+        }
+
+        a1 = a1 + minc * maxc;
+    }
+
+    cout << a1 << endl;
 }
 
 int main(){
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    int t; cin >> t;
+    //ios_base::sync_with_stdio(0); cin.tie(0);
+    ll t; cin >> t;
     while (t--) solve();
     return 0;
 }

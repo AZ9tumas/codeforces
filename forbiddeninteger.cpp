@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
-#include <string>
+#include <ios>
 using namespace std;
-using ll = long long;
 
-template<typename A, typename B> ostream& operator<<(ostream &os, const pair<A, B> &p) { return os << '(' << p.first << ", " << p.second << ')'; }
-template<typename T_container, typename T = typename enable_if<!is_same<T_container, string>::value, typename T_container::value_type>::type> ostream& operator<<(ostream &os, const T_container &v) { os << '{'; string sep; for (const T &x : v) os << sep << x, sep = ", "; return os << '}'; }
 
 // helper structures
 struct trie {
@@ -33,10 +30,13 @@ struct trie {
             if (curr->alph[index] == nullptr){
                 curr->alph[index] = new trie();
             }
+
+
             curr = curr->alph[index];
         }
 
         curr->isend = true;
+
     }
 
     bool search(const string s){
@@ -52,48 +52,47 @@ struct trie {
             curr = curr->alph[index];
 
         }
-
+        
         return curr != nullptr && curr->isend;
     }
 };
 
-bool isPrime(ll a){
-    for (ll i = 2; i <= sqrt(a); i++){
-        if (a % i == 0) return false;
-    }
+string trie::commonPrefix() {
+    string f;
+    trie* currNode = this;
 
-    return true;
-}
+    while (true){
+        int count = 0;
+        int next_index = -1;
 
-// helper to get unique prime factors for small numbers
-unordered_set<ll> get_fac(ll num){
-    unordered_set<ll> fac;
+        for (int i = 0; i < 26; i++){
 
-    while (num % 2 == 0){
-        fac.insert(2);
-        num /= 2;
-    }
+            if (currNode->alph[i] != nullptr){
+                count++;
+                next_index = i;
+            }
 
-   for (ll d = 3; d * d <= num; d += 2){
-        while (num % d == 0){
-            fac.insert(d);
-            num /= d;
+        }
+
+
+        if (count == 1 && !currNode->isend){
+            f += (char)('a' + next_index);
+            currNode = currNode->alph[next_index];
+        } else {
+            break;
         }
     }
 
-    if (num > 1) fac.insert(num);
-    return fac;
+    return f;
 }
 
 // main soln
 void solve(){
-    int e; cin >> e;
-    cout << get_fac(e) << endl;
+
 }
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
-    int t; cin >> t;
-    while (t--) solve();
+    solve();
     return 0;
 }

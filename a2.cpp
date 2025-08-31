@@ -5,7 +5,7 @@ int main(){
     int t;
     cin >> t;
 
-    while (t--){        
+    while (t--){
         unsigned long long inpt; cin >> inpt;
         
         long long div = 10;

@@ -1,0 +1,120 @@
+#include <bits/stdc++.h>
+#include <ios>
+using namespace std;
+using ll = long long;
+
+// helper structures
+struct trie {
+
+    trie *alph[26];
+    bool isend;
+
+    trie() {
+        this->isend = false;
+        for (int i = 0; i < 26; i++) {
+            this->alph[i] = nullptr;
+        }
+    }
+    ~trie() {
+        for (int i = 0; i < 26; i++) delete alph[i];
+    }
+
+    string commonPrefix();
+
+    void addword(string s){
+        trie* curr = this;
+
+        for (char c : s){
+            int index = c - 'a';
+
+            if (curr->alph[index] == nullptr){
+                curr->alph[index] = new trie();
+            }
+
+
+            curr = curr->alph[index];
+        }
+
+        curr->isend = true;
+
+    }
+
+    bool search(const string s){
+        trie *curr = this;
+
+
+        for (char c : s){
+            int index = c - 'a';
+            if (curr->alph[index] == nullptr){
+                return false;
+            }
+
+            curr = curr->alph[index];
+
+        }
+        
+        return curr != nullptr && curr->isend;
+    }
+};
+
+string trie::commonPrefix() {
+    string f;
+    trie* currNode = this;
+
+    while (true){
+        int count = 0;
+        int next_index = -1;
+
+        for (int i = 0; i < 26; i++){
+
+            if (currNode->alph[i] != nullptr){
+                count++;
+                next_index = i;
+            }
+
+        }
+
+
+        if (count == 1 && !currNode->isend){
+            f += (char)('a' + next_index);
+            currNode = currNode->alph[next_index];
+        } else {
+            break;
+        }
+    }
+
+    return f;
+}
+
+// main soln
+void solve(){
+    ll len, last;
+    cin >> len >> last;
+    ll op = 0;
+
+    for (ll i = 1; i < len; i++){
+        ll curr; cin >> curr;
+        ll even, odd;
+
+        if (i % 2 == 1){ even = curr; odd = last; }
+        else { odd = curr; even = last; }
+
+        //cout << "even: " << even << ", odd: " << odd << endl;
+        // if even is lower, make odd lower and add the diff
+        if (even < odd){
+            op += (odd - even);
+            odd = even;
+            if (i % 2 == 0) curr = even;
+        }
+        last = curr;
+    }
+
+    cout << "soln:: " << op << endl;
+}
+
+int main(){
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    int t; cin >> t;
+    while (t--) solve();
+    return 0;
+}
