@@ -86,10 +86,7 @@ unordered_set<ll> get_fac(ll num){
 }
 
 // main soln
-void solve(){
-    int e; cin >> e;
-    cout << get_fac(e) << endl;
-}
+void solve(){ }
 
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
